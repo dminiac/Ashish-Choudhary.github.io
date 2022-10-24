@@ -1,0 +1,110 @@
+@@include('header.htm')
+
+<main class="site-wrapper">
+  <div class="pt-table">
+    <div class="pt-tablecell page-works relative">
+      <!-- .close -->
+      <a href="./" class="page-close"><i class="tf-ion-close"></i></a>
+      <!-- /.close -->
+
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="page-title text-center">
+              <h2>My <span class="primary">works</span> <span class="title-bg">works</span></h2>
+              <p>This section includes some of my personal projects which I have made apart from the work that I do for clients and the companies
+                that I work for as a full time Software Engineer.</p>
+            </div>
+          </div>
+        </div> <!-- /.row -->
+
+        <div class="row">
+          <div class="col-xs-12">
+            <ul class="filter list-inline">
+              <li><a href="#" class="active" data-filter="*">All</a></li>
+              <li><a href="#" data-filter=".Photoshop">Frontend Centric Projects</a></li>
+              <li><a href="#" data-filter=".Illustrator">API based Projects</a></li>
+              <li><a href="#" data-filter=".Indesign">Research Project</a></li>
+              <li><a href="#" data-filter=".Artworks">Full Stack</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row isotope-gutter">
+          <div class="col-xs-12 col-sm-6 col-md-4 Photoshop Illustrator">
+            <figure class="works-item">
+              <img src="images/works/1.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>DevCart eCommerce Platform</h4>
+                <p>E-Commerce platform built with the MERN stack & Redux.</p>
+                <a href="https://devcart.herokuapp.com/">Live Application</a>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4 Illustrator">
+            <figure class="works-item">
+              <img src="images/works/2.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>Interactive Mini Games</h4>
+                <p>Designed various mini games using Python.</p>
+                <a href="https://py2.codeskulptor.org/#user38_ltFkp5gL7Pnp14v.py">Live Application</a>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4 Indesign Photoshop">
+            <figure class="works-item">
+              <img src="images/works/3.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>Criminal Analysis Using DBSCAN</h4>
+                <p>Built an app in which crime analysis is done.</p>
+                <a href="https://github.com/dminiac/React-leaflet-Application">Project Details</a>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4 Artworks Illustrator">
+            <figure class="works-item">
+              <img src="images/works/4.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>Covid-19 Tracker</h4>
+                <p>COVID-19 Tracker made with JavaScript.</p>
+                <a href="https://covid19statswebsite.netlify.app/">Live Application</a>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4 Photoshop">
+            <figure class="works-item">
+              <img src="images/works/5.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>Simple Snake Game</h4>
+                <p>Snake game using Python and Firebase.</p>
+                <a href="https://snakegame-101.web.app/">Live Application</a>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-4 Illustrator">
+            <figure class="works-item">
+              <img src="images/works/2.jpg" alt="">
+              <div class="overlay"></div>
+              <figcaption class="works-inner">
+                <h4>Social Media Application</h4>
+                <p>Open Social Media using ReactJS.</p>
+                <a href="https://opendiary-app.netlify.app/">Live Application</a>
+              </figcaption>
+            </figure>
+          </div>
+        </div> <!-- /.row -->
+      </div> <!-- /.container -->
+
+      @@include('blocks/page-nav.htm',{"prev":"resume.html", "next":"testimonials.html"})
+      <!-- /.container -->
+
+    </div> <!-- /.pt-tablecell -->
+  </div> <!-- /.pt-table -->
+</main> <!-- /.site-wrapper -->
+
+@@include('footer.htm')
