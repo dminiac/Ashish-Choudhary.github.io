@@ -1,6 +1,7 @@
 # Static site — no build step required
 [build]
 publish = "."
+command = ""
 
 [[headers]]
 for = "/*"
