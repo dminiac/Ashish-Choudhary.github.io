@@ -1,12 +1,18 @@
+# Static site — no build step required
 [build]
-publish = "theme"
-command = "npm run build"
+publish = "."
 
 [[headers]]
-for = "/*" # This defines which paths this specific [[headers]] block will cover.
+for = "/*"
 
 [headers.values]
 X-Frame-Options = "DENY"
-X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
 Referrer-Policy = "same-origin"
 Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+[[headers]]
+for = "/images/*"
+
+[headers.values]
+Cache-Control = "public, max-age=604800"
