@@ -1,7 +1,9 @@
-# Static site — no build step required
+# Static site — no build step required.
+# A real no-op command is required here: an empty string is treated as absent
+# and Netlify falls back to the stale build command saved in the UI.
 [build]
 publish = "."
-command = ""
+command = "echo 'Static site - nothing to build'"
 
 [[headers]]
 for = "/*"

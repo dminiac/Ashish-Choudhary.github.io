@@ -116,60 +116,80 @@
     var heroVisible = true;
     var rafId = null;
 
+    // Each particle lives on a depth layer (z: 0.3 far … 1 near). Nearer
+    // particles are bigger, faster, brighter, and shift more with the mouse —
+    // a parallax camera effect that reads as real depth.
+    var parallax = { x: 0, y: 0 };
+
     function sizeCanvas() {
       heroCanvas.width = hero.offsetWidth;
       heroCanvas.height = hero.offsetHeight;
-      var count = Math.min(90, Math.floor((heroCanvas.width * heroCanvas.height) / 14000));
+      var count = Math.min(100, Math.floor((heroCanvas.width * heroCanvas.height) / 12000));
       particles = [];
       for (var i = 0; i < count; i++) {
+        var z = Math.random() * 0.7 + 0.3;
         particles.push({
           x: Math.random() * heroCanvas.width,
           y: Math.random() * heroCanvas.height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          r: Math.random() * 1.6 + 0.6
+          vx: (Math.random() - 0.5) * 0.45 * z,
+          vy: (Math.random() - 0.5) * 0.45 * z,
+          r: (Math.random() * 1.5 + 0.7) * (0.6 + z),
+          z: z
         });
       }
     }
 
     function drawParticles() {
-      pctx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+      var W = heroCanvas.width, H = heroCanvas.height;
+      pctx.clearRect(0, 0, W, H);
+
+      // Ease the parallax camera toward the mouse for a smooth glide
+      var targetX = mouse.x !== null ? mouse.x - W / 2 : 0;
+      var targetY = mouse.y !== null ? mouse.y - H / 2 : 0;
+      parallax.x += (targetX - parallax.x) * 0.06;
+      parallax.y += (targetY - parallax.y) * 0.06;
 
       for (var i = 0; i < particles.length; i++) {
         var p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        if (p.x < 0 || p.x > heroCanvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > heroCanvas.height) p.vy *= -1;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        // Projected position: deeper layers barely move, near layers sweep
+        p.px = p.x - parallax.x * 0.06 * p.z;
+        p.py = p.y - parallax.y * 0.06 * p.z;
 
         pctx.beginPath();
-        pctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        pctx.fillStyle = "rgba(34, 211, 238, 0.5)";
+        pctx.arc(p.px, p.py, p.r, 0, Math.PI * 2);
+        pctx.fillStyle = "rgba(34, 211, 238, " + (0.2 + 0.4 * p.z) + ")";
         pctx.fill();
 
         for (var j = i + 1; j < particles.length; j++) {
           var q = particles[j];
-          var dx = p.x - q.x, dy = p.y - q.y;
+          if (q.px === undefined) continue;
+          var dx = p.px - q.px, dy = p.py - q.py;
           var dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 110) {
+            var depth = (p.z + q.z) / 2;
             pctx.beginPath();
-            pctx.moveTo(p.x, p.y);
-            pctx.lineTo(q.x, q.y);
-            pctx.strokeStyle = "rgba(139, 92, 246, " + (0.18 * (1 - dist / 110)) + ")";
-            pctx.lineWidth = 1;
+            pctx.moveTo(p.px, p.py);
+            pctx.lineTo(q.px, q.py);
+            pctx.strokeStyle = "rgba(139, 92, 246, " + (0.22 * depth * (1 - dist / 110)) + ")";
+            pctx.lineWidth = depth;
             pctx.stroke();
           }
         }
 
         if (mouse.x !== null) {
-          var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+          var mdx = p.px - mouse.x, mdy = p.py - mouse.y;
           var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-          if (mdist < 160) {
+          if (mdist < 170) {
             pctx.beginPath();
-            pctx.moveTo(p.x, p.y);
+            pctx.moveTo(p.px, p.py);
             pctx.lineTo(mouse.x, mouse.y);
-            pctx.strokeStyle = "rgba(34, 211, 238, " + (0.3 * (1 - mdist / 160)) + ")";
-            pctx.lineWidth = 1;
+            pctx.strokeStyle = "rgba(34, 211, 238, " + (0.35 * p.z * (1 - mdist / 170)) + ")";
+            pctx.lineWidth = p.z;
             pctx.stroke();
           }
         }
@@ -249,25 +269,44 @@
   }
 
   // ---------------------------------------------------------------
-  // 3D tilt on project cards
+  // 3D tilt + light glare — applied across cards and the hero photo
   // ---------------------------------------------------------------
   var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-  if (finePointer && !reducedMotion) {
-    document.querySelectorAll(".project-card").forEach(function (card) {
+  function makeTilt(selector, maxDeg, lift) {
+    document.querySelectorAll(selector).forEach(function (card) {
+      card.classList.add("tilt3d");
+
+      var glare = document.createElement("span");
+      glare.className = "glare";
+      glare.setAttribute("aria-hidden", "true");
+      card.appendChild(glare);
+
       card.addEventListener("mousemove", function (e) {
         var rect = card.getBoundingClientRect();
-        var rx = ((e.clientY - rect.top) / rect.height - 0.5) * -7;
-        var ry = ((e.clientX - rect.left) / rect.width - 0.5) * 7;
+        var px = (e.clientX - rect.left) / rect.width;
+        var py = (e.clientY - rect.top) / rect.height;
+        var rx = (py - 0.5) * -2 * maxDeg;
+        var ry = (px - 0.5) * 2 * maxDeg;
+        card.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
+        card.style.setProperty("--my", (py * 100).toFixed(1) + "%");
         card.classList.add("tilting");
         card.style.transform =
-          "translateY(-6px) perspective(800px) rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg)";
+          "translateY(-" + lift + "px) perspective(900px)" +
+          " rotateX(" + rx.toFixed(2) + "deg) rotateY(" + ry.toFixed(2) + "deg)";
       });
+
       card.addEventListener("mouseleave", function () {
         card.classList.remove("tilting");
         card.style.transform = "";
       });
     });
+  }
+
+  if (finePointer && !reducedMotion) {
+    makeTilt(".project-card", 9, 6);
+    makeTilt(".skill-card, .stat-card, .award, .edu-card, .testimonial", 6, 4);
+    makeTilt(".photo-ring", 11, 0);
   }
 
   // ---------------------------------------------------------------

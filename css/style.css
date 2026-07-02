@@ -251,7 +251,16 @@ ul { list-style: none; }
   transform: translateY(-3px);
 }
 
-.hero-photo { display: flex; justify-content: center; }
+.hero-photo {
+  display: flex;
+  justify-content: center;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
 
 .photo-ring {
   position: relative;
@@ -516,11 +525,33 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+/* Generic 3D tilt treatment applied by JS */
+.tilt3d {
+  position: relative;
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-.project-card.tilting { transition: border-color 0.25s, box-shadow 0.25s; }
+.tilt3d.tilting { transition: border-color 0.25s, box-shadow 0.25s; }
+
+.tilt3d .glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.16),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.tilt3d:hover .glare { opacity: 1; }
 
 .project-card:hover {
   transform: translateY(-6px);
@@ -803,7 +834,7 @@ ul { list-style: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  #gameFab, .type-cursor { animation: none; }
+  #gameFab, .type-cursor, .hero-photo { animation: none; }
 }
 
 /* =============== Responsive =============== */
