@@ -40,10 +40,11 @@
   <main>
     <!-- ======= Hero ======= -->
     <section class="hero container">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
       <div class="hero-text reveal">
         <p class="eyebrow">Hi there, I'm</p>
         <h1>Ashish <span class="gradient-text">Choudhary</span></h1>
-        <p class="hero-role">Staff Software Engineer (Frontend Heavy) @ Nagarro</p>
+        <p class="hero-role"><span id="typed">Staff Software Engineer (Frontend Heavy) @ Nagarro</span><span class="type-cursor" aria-hidden="true">|</span></p>
         <p class="hero-desc">
           Software engineer from Mumbai with ~6 years of experience building scalable,
           accessible enterprise web applications with React, TypeScript and modern frontend
@@ -417,6 +418,25 @@
       </div>
     </section>
   </main>
+
+  <!-- ======= Snake mini-game ======= -->
+  <button id="gameFab" aria-label="Play the snake game" title="Bored? Play snake!">🎮</button>
+
+  <div class="game-modal" id="gameModal" hidden>
+    <div class="game-box" role="dialog" aria-modal="true" aria-label="Snake game">
+      <div class="game-head">
+        <h3>🐍 Snake — can you beat the engineer?</h3>
+        <button id="gameClose" class="game-close" aria-label="Close game">&times;</button>
+      </div>
+      <canvas id="snakeCanvas" width="360" height="360"></canvas>
+      <div class="game-meta">
+        <span>Score <b id="gameScore">0</b></span>
+        <span>Best <b id="gameBest">0</b></span>
+        <button id="gameStart" class="btn btn-primary">Start</button>
+      </div>
+      <p class="game-hint">Arrow keys or WASD to steer &middot; swipe on mobile</p>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container footer-inner">

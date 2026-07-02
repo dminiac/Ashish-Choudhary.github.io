@@ -132,12 +132,33 @@ ul { list-style: none; }
 
 /* =============== Hero =============== */
 .hero {
+  position: relative;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   align-items: center;
   gap: 48px;
   padding: 96px 0 64px;
   min-height: calc(100vh - 76px);
+}
+
+#heroCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.type-cursor {
+  color: var(--accent);
+  font-weight: 400;
+  margin-left: 2px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 .eyebrow {
@@ -495,7 +516,11 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
+
+.project-card.tilting { transition: border-color 0.25s, box-shadow 0.25s; }
 
 .project-card:hover {
   transform: translateY(-6px);
@@ -663,6 +688,106 @@ ul { list-style: none; }
 .back-top { color: var(--muted); transition: color 0.2s; }
 .back-top:hover { color: var(--accent); }
 
+/* =============== Snake mini-game =============== */
+#gameFab {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: var(--gradient);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+  transition: transform 0.2s;
+  animation: fab-pulse 2.6s ease-in-out infinite;
+}
+
+#gameFab:hover { transform: scale(1.12) rotate(-8deg); animation: none; }
+
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4); }
+  50% { box-shadow: 0 8px 34px rgba(34, 211, 238, 0.65); }
+}
+
+.game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 8, 15, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 20px;
+}
+
+.game-modal[hidden] { display: none; }
+
+.game-box {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  max-width: 100%;
+}
+
+.game-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.game-head h3 { font-family: var(--font-display); font-size: 1.05rem; }
+
+.game-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.game-close:hover { color: var(--accent); }
+
+#snakeCanvas {
+  display: block;
+  width: min(360px, 78vw);
+  height: auto;
+  border-radius: 10px;
+  background: #0a0e17;
+  border: 1px solid var(--border);
+}
+
+.game-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.game-meta b { color: var(--accent); font-family: var(--font-display); }
+.game-meta .btn { padding: 9px 22px; }
+
+.game-hint {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 /* =============== Reveal animation =============== */
 .reveal {
   opacity: 0;
@@ -678,6 +803,7 @@ ul { list-style: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  #gameFab, .type-cursor { animation: none; }
 }
 
 /* =============== Responsive =============== */
