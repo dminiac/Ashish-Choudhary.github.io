@@ -1,9 +1,11 @@
-# Static site — no build step required.
-# A real no-op command is required here: an empty string is treated as absent
-# and Netlify falls back to the stale build command saved in the UI.
+# Static site — no real build step. The Netlify site has a stale publish
+# directory ('theme') saved in its UI settings that wins at the deploy stage,
+# so the "build" simply copies the site into theme/ and we publish that.
+# (A real command is required here: an empty string is treated as absent and
+# Netlify falls back to the stale 'npm run build' saved in the UI.)
 [build]
-publish = "."
-command = "echo 'Static site - nothing to build'"
+publish = "theme"
+command = "mkdir -p theme && cp -r index.html css js images theme/"
 
 [[headers]]
 for = "/*"
